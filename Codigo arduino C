@@ -1,0 +1,173 @@
+#include <DHT.h>           
+#include <LiquidCrystal.h>  
+#include <LiquidCrystal_I2C.h> 
+
+const int lightPin = A0;
+const int dhtPin = 2;
+const int greenLedPin = 10;
+const int yellowLedPin = 11;
+const int redLedPin = 12;
+const int buzzerPin = 9;
+
+DHT dht(dhtPin, DHT22);  // Use DHT22
+
+LiquidCrystal_I2C lcd(0x27, 16, 2); 
+
+const int lightThresholdLow = 200;   
+const int lightThresholdHigh = 800;  
+const float tempMin = 10.0;
+const float tempMax = 15.0;
+const float humidityMin = 50.0;
+const float humidityMax = 70.0;
+
+float temperature = 0.0;
+float humidity = 0.0;
+int lightValue = 0;
+
+const int numReadings = 5;
+float tempReadings[numReadings];
+float humidityReadings[numReadings];
+int lightReadings[numReadings];
+int readIndex = 0;
+float tempSum = 0.0;
+float humiditySum = 0.0;
+int lightSum = 0;
+
+unsigned long previousMillis = 0;
+const long interval = 5000;  
+
+void setup() {
+  Serial.begin(9600);
+  dht.begin();
+  lcd.init();
+  lcd.backlight();
+  pinMode(greenLedPin, OUTPUT);
+  pinMode(yellowLedPin, OUTPUT);
+  pinMode(redLedPin, OUTPUT);
+  pinMode(buzzerPin, OUTPUT);
+
+  
+  for (int i = 0; i < numReadings; i++) {
+    tempReadings[i] = 0.0;
+    humidityReadings[i] = 0.0;
+    lightReadings[i] = 0;
+  }
+}
+
+void loop() {
+  
+  unsigned long currentMillis = millis();
+
+  
+  if (currentMillis - previousMillis >= interval) {
+    previousMillis = currentMillis;
+
+    
+    lightValue = analogRead(lightPin);
+    temperature = dht.readTemperature();
+    humidity = dht.readHumidity();
+
+    
+    tempSum -= tempReadings[readIndex];
+    humiditySum -= humidityReadings[readIndex];
+    lightSum -= lightReadings[readIndex];
+
+    tempReadings[readIndex] = temperature;
+    humidityReadings[readIndex] = humidity;
+    lightReadings[readIndex] = lightValue;
+
+    tempSum += tempReadings[readIndex];
+    humiditySum += humidityReadings[readIndex];
+    lightSum += lightReadings[readIndex];
+
+    readIndex++;
+    if (readIndex >= numReadings) {
+      readIndex = 0;
+    }
+
+    float avgTemp = tempSum / numReadings;
+    float avgHumidity = humiditySum / numReadings;
+    float avgLight = lightSum / numReadings;
+
+    Serial.print("Light: ");
+    Serial.print(lightValue);
+    Serial.print(" | Temp: ");
+    Serial.print(temperature);
+    Serial.print(" | Humidity: ");
+    Serial.println(humidity);
+
+    controlSystem(avgLight, avgTemp, avgHumidity);
+  }
+}
+
+void controlSystem(float light, float temp, float humid) {
+
+  digitalWrite(greenLedPin, LOW);
+  digitalWrite(yellowLedPin, LOW);
+  digitalWrite(redLedPin, LOW);
+  digitalWrite(buzzerPin, LOW);
+  lcd.clear();
+
+  if (light < lightThresholdLow) {
+    digitalWrite(greenLedPin, HIGH);
+  } else if (light < lightThresholdHigh) {
+    digitalWrite(yellowLedPin, HIGH);
+    lcd.setCursor(0, 0);
+    lcd.print("Ambiente a meia");
+    lcd.setCursor(0, 1);
+    lcd.print("luz");
+  } else {
+    digitalWrite(redLedPin, HIGH);
+    digitalWrite(buzzerPin, HIGH);
+    lcd.setCursor(0, 0);
+    lcd.print("Ambiente muito");
+    lcd.setCursor(0, 1);
+    lcd.print("CLARO");
+  }
+
+  
+  if (temp >= tempMin && temp <= tempMax) {
+    lcd.setCursor(0, 0);
+    lcd.print("Temperatura OK");
+    lcd.setCursor(0, 1);
+    lcd.print("Temp. ");
+    lcd.print(temp);
+    lcd.print(" C");
+  } else {
+    digitalWrite(yellowLedPin, HIGH);
+    digitalWrite(buzzerPin, HIGH);
+    lcd.setCursor(0, 0);
+    if (temp > tempMax) {
+      lcd.print("Temp. ALTA");
+    } else {
+      lcd.print("Temp. BAIXA");
+    }
+    lcd.setCursor(0, 1);
+    lcd.print("Temp. ");
+    lcd.print(temp);
+    lcd.print(" C");
+  }
+
+ 
+  if (humid >= humidityMin && humid <= humidityMax) {
+    lcd.setCursor(0, 0);
+    lcd.print("Umidade OK");
+    lcd.setCursor(0, 1);
+    lcd.print("Umidade ");
+    lcd.print(humid);
+    lcd.print(" %");
+  } else {
+    digitalWrite(redLedPin, HIGH);
+    digitalWrite(buzzerPin, HIGH);
+    lcd.setCursor(0, 0);
+    if (humid > humidityMax) {
+      lcd.print("Umidade ALTA");
+    } else {
+      lcd.print("Umidade BAIXA");
+    }
+    lcd.setCursor(0, 1);
+    lcd.print("Umidade ");
+    lcd.print(humid);
+    lcd.print(" %");
+  }
+}
