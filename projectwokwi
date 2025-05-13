@@ -1,0 +1,81 @@
+{
+  "version": 1,
+  "author": "Paulinho",
+  "editor": "wokwi",
+  "parts": [
+    { "type": "wokwi-arduino-uno", "id": "uno", "top": 39, "left": 623.4, "attrs": {} },
+    {
+      "type": "wokwi-dht22",
+      "id": "dht",
+      "top": -191.7,
+      "left": 186.6,
+      "attrs": { "humidity": "50" }
+    },
+    {
+      "type": "wokwi-photoresistor-sensor",
+      "id": "ldr",
+      "top": -275.2,
+      "left": -191.2,
+      "attrs": {}
+    },
+    {
+      "type": "wokwi-led",
+      "id": "ledVerde",
+      "top": 360,
+      "left": 100,
+      "attrs": { "color": "green" }
+    },
+    {
+      "type": "wokwi-led",
+      "id": "ledAmarelo",
+      "top": 360,
+      "left": 140,
+      "attrs": { "color": "yellow" }
+    },
+    {
+      "type": "wokwi-led",
+      "id": "ledVermelho",
+      "top": 361.2,
+      "left": 195.8,
+      "attrs": { "color": "red" }
+    },
+    { "type": "wokwi-resistor", "id": "resVerde", "top": 320, "left": 100, "attrs": {} },
+    { "type": "wokwi-resistor", "id": "resAmarelo", "top": 320, "left": 140, "attrs": {} },
+    { "type": "wokwi-resistor", "id": "resVermelho", "top": 320, "left": 180, "attrs": {} },
+    { "type": "wokwi-buzzer", "id": "buzzer", "top": 200, "left": 320, "attrs": {} },
+    { "type": "wokwi-breadboard", "id": "breadboard", "top": 467.4, "left": 50.8, "attrs": {} },
+    {
+      "type": "wokwi-lcd1602",
+      "id": "lcd2",
+      "top": 35.2,
+      "left": 965.6,
+      "attrs": { "pins": "i2c" }
+    }
+  ],
+  "connections": [
+    [ "ldr:VCC", "breadboard:1t.b", "red", [] ],
+    [ "ldr:GND", "breadboard:3t.b", "black", [] ],
+    [ "ldr:AO", "uno:A0", "green", [] ],
+    [ "uno:5V", "breadboard:1t.a", "red", [] ],
+    [ "uno:GND.1", "breadboard:3t.a", "black", [] ],
+    [ "dht:VCC", "breadboard:1t.b", "red", [] ],
+    [ "dht:GND", "breadboard:3t.b", "black", [] ],
+    [ "dht:SIGNAL", "uno:2", "blue", [] ],
+    [ "uno:3", "resVerde:1", "green", [] ],
+    [ "resVerde:2", "ledVerde:A", "green", [] ],
+    [ "ledVerde:C", "breadboard:3t.b", "black", [] ],
+    [ "uno:4", "resAmarelo:1", "yellow", [] ],
+    [ "resAmarelo:2", "ledAmarelo:A", "yellow", [] ],
+    [ "ledAmarelo:C", "breadboard:3t.b", "black", [] ],
+    [ "uno:5", "resVermelho:1", "red", [] ],
+    [ "resVermelho:2", "ledVermelho:A", "red", [] ],
+    [ "ledVermelho:C", "breadboard:3t.b", "black", [] ],
+    [ "buzzer:1", "uno:6", "orange", [] ],
+    [ "buzzer:2", "breadboard:3t.b", "black", [] ],
+    [ "lcd2:VCC", "uno:5V", "red", [ "h0" ] ],
+    [ "uno:GND.2", "lcd2:GND", "black", [ "v0" ] ],
+    [ "uno:A5", "lcd2:SCL", "yellow", [ "v0" ] ],
+    [ "uno:A4", "lcd2:SDA", "#8f4814", [ "v0" ] ]
+  ],
+  "dependencies": {}
+}
