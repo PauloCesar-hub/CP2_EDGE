@@ -73,7 +73,7 @@ Com base nas leituras dos sensores, o sistema exibe informações em um **Displa
 ## 🔗 Links Importantes
 
 - 🔌 [Simulação no Wokwi](https://wokwi.com/projects/431033573807243265)
-- 📽️ [Vídeo explicativo do projeto](
+- 📽️ [Vídeo explicativo do projeto](https://www.youtube.com/watch?v=Fe03LMVl0Uk)
 
 ## 🎓 Integrantes
 
