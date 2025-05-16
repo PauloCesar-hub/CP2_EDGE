@@ -77,11 +77,11 @@ Com base nas leituras dos sensores, o sistema exibe informações em um **Displa
 
 ## 🎓 Integrantes
 
-Paulo Cesar de Govea Junior - (RM:566034)
-Guilherme Vilela Perez - (RM:564422)
-Gustavo Panham Dourado - (RM:563904)
-Christian Schunck de Almeida - (RM:563850)
-Thomas Jeferson Santana Wang - (RM565104)
+- Paulo Cesar de Govea Junior - (RM:566034)
+- Guilherme Vilela Perez - (RM:564422)
+- Gustavo Panham Dourado - (RM:563904)
+- Christian Schunck de Almeida - (RM:563850)
+- Thomas Jeferson Santana Wang - (RM565104)
 
 ## 🧠 Dificuldades e Soluções
 
